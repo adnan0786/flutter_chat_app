@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -6,13 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_chat_app/appTheme.dart';
 import 'package:flutter_chat_app/bindings/dashboardBinding.dart';
 import 'package:flutter_chat_app/bindings/networkBinding.dart';
+import 'package:flutter_chat_app/models/chatModel.dart';
 import 'package:flutter_chat_app/network/firebaseService.dart';
 import 'package:flutter_chat_app/screens/dashboard.dart';
+import 'package:flutter_chat_app/screens/messageScreen.dart';
 import 'package:flutter_chat_app/screens/splashScreen.dart';
 import 'package:flutter_chat_app/services/callService.dart';
 import 'package:flutter_chat_app/utils/localNotificationUtils.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+
+import 'models/notificationModel.dart';
 
 late AndroidNotificationChannel channel;
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -34,24 +39,26 @@ void main() async {
     }
   });
 
-  LocalNotificationUtils.initialize(Get.context!);
-
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
   ///forground work
   FirebaseMessaging.onMessage.listen((message) {
-    if (message.notification != null) {
-      print(message.notification!.body);
-      print(message.notification!.title);
-    }
-
-    // LocalNotificationService.display(message);
+    NotificationModel notificationModel =
+        NotificationModel.fromJson(message.data);
+    LocalNotificationUtils.display(message);
   });
 
   ///When the app is in background but opened and user taps
   ///on the notification
   FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    final routeFromMessage = message.data["route"];
+    NotificationModel notificationModel =
+        NotificationModel.fromJson(message.data);
+    print("object  onMessageOpenedApp");
+    Get.to(MessageScreen(), arguments: [
+      ChatModel(notificationModel.chatId, "", Timestamp.now(), List.empty(),
+          image: notificationModel.image, name: notificationModel.name),
+      notificationModel.userId
+    ]);
 
     // Navigator.of(context).pushNamed(routeFromMessage);
   });
@@ -60,7 +67,14 @@ void main() async {
   ///and it opened the app from terminated state
   FirebaseMessaging.instance.getInitialMessage().then((message) {
     if (message != null) {
-      final routeFromMessage = message.data["route"];
+      print("object  getInitialMessage");
+      NotificationModel notificationModel =
+          NotificationModel.fromJson(message.data);
+      Get.to(MessageScreen(), arguments: [
+        ChatModel(notificationModel.chatId, "", Timestamp.now(), List.empty(),
+            image: notificationModel.image, name: notificationModel.name),
+        notificationModel.userId
+      ]);
 
       // Navigator.of(context).pushNamed(routeFromMessage);
     }
@@ -72,6 +86,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    LocalNotificationUtils.initialize(context);
     return GetMaterialApp(
       title: 'Chat App',
       enableLog: true,
@@ -98,4 +113,6 @@ class Routes {
 }
 
 // When app is in background
-Future<void> backgroundHandler(RemoteMessage message) async {}
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print("object  backgroundHandler");
+}

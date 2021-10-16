@@ -351,9 +351,9 @@ class FirebaseService {
         .doc("token")
         .get(GetOptions(source: Source.server))
         .then((value) {
-      if (value.exists) {
+      if (value.exists)
         return value.data()!["token"];
-      } else
+      else
         return true;
     });
   }
@@ -432,6 +432,19 @@ class FirebaseService {
     FirebaseFirestore.instance.collection("users").doc(userId).update(map);
   }
 
+  Future<String?> getToken(String userId) {
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .get()
+        .then((value) {
+      if (value.exists)
+        return value.data()!["token"].toString();
+      else
+        return "";
+    });
+  }
+
   Future<void> sendPushMessage(String title, String body,
       Map<String, dynamic> data, String token) async {
     await http.post(
@@ -442,15 +455,27 @@ class FirebaseService {
       },
       body: jsonEncode(
         <String, dynamic>{
-          'notification': <String, dynamic>{
-            'body': 'this is a body',
-            'title': 'this is a title'
-          },
+          'notification': <String, dynamic>{'body': title, 'title': body},
           'priority': 'high',
           'data': data,
           'to': token,
         },
       ),
     );
+  }
+
+  Stream<List<MessageModel>> getStarredMessages(String chatId) {
+    CollectionReference messageRef = FirebaseFirestore.instance
+        .collection("chatList")
+        .doc(chatId)
+        .collection("messages");
+
+    return messageRef
+        .orderBy("date")
+        .where("star", isEqualTo: true)
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
+            .toList());
   }
 }

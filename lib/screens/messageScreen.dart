@@ -174,9 +174,11 @@ class MessageScreen extends GetView<MessageController> {
                   ),
                   IconButton(
                     onPressed: () {
-                      Get.to(UserInfoScreen(
-                        userModel: controller.user,
-                      ));
+                      Get.to(
+                          UserInfoScreen(
+                            userModel: controller.user,
+                          ),
+                          arguments: [controller.chatId]);
                     },
                     icon: Icon(
                       Icons.info,

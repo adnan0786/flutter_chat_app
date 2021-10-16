@@ -1,5 +1,11 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_chat_app/models/chatModel.dart';
+import 'package:flutter_chat_app/models/notificationModel.dart';
+import 'package:flutter_chat_app/screens/messageScreen.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,9 +21,15 @@ class LocalNotificationUtils {
             android: AndroidInitializationSettings("@mipmap/ic_launcher"));
 
     _notificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (String? route) async {
-      if (route != null) {
-        Navigator.of(context).pushNamed(route);
+        onSelectNotification: (String? data) async {
+      if (data != null) {
+        NotificationModel notificationModel =
+            NotificationModel.fromJson(jsonDecode(data));
+        Get.to(MessageScreen(), arguments: [
+          ChatModel(notificationModel.chatId, "", Timestamp.now(), List.empty(),
+              image: notificationModel.image, name: notificationModel.name),
+          notificationModel.userId
+        ]);
       }
     });
   }
@@ -28,19 +40,21 @@ class LocalNotificationUtils {
 
       final NotificationDetails notificationDetails = NotificationDetails(
           android: AndroidNotificationDetails(
-        "easyapproach",
-        "easyapproach channel",
+        "flutterchat",
+        "flutterchat channel",
         channelDescription: "this is our channel",
         importance: Importance.max,
         priority: Priority.high,
       ));
 
+      NotificationModel notificationModel =
+          NotificationModel.fromJson(message.data);
       await _notificationsPlugin.show(
         id,
         message.notification!.title,
         message.notification!.body,
         notificationDetails,
-        payload: message.data["route"],
+        payload: notificationModel.toJsonString(),
       );
     } on Exception catch (e) {
       print(e);

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/common/appConstants.dart';
 import 'package:flutter_chat_app/common/appPermissions.dart';
 import 'package:flutter_chat_app/models/chatMessageModel.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
@@ -30,6 +31,7 @@ class MessageController extends GetxController {
   late ChatMessageModel replyMessage;
   final appPermissions = AppPermissions();
   String myId = FirebaseAuth.instance.currentUser!.uid;
+  String myName = FirebaseAuth.instance.currentUser!.displayName!;
   ScrollController scrollController = new ScrollController();
   var userModel = UserModel(
           uId: "uId",
@@ -203,11 +205,16 @@ class MessageController extends GetxController {
     service.sendTextMessage(chatId!, messageModel);
     massageController.text = "";
     focusNode.unfocus();
-    // scrollController.animateTo(
-    //   scrollController.position.maxScrollExtent,
-    //   duration: Duration(seconds: 1),
-    //   curve: Curves.fastOutSlowIn,
-    // );
+    service.getToken(user.uId).then((token) {
+      if (token != null && token.isNotEmpty) {
+        Map<String, dynamic> map = Map();
+        map["chatId"] = chatId;
+        map["name"] = user.name;
+        map["image"] = user.image;
+        map["type"] = AppConstants.textNotification;
+        service.sendPushMessage(myName, messageModel.message, map, token);
+      }
+    });
   }
 
   void checkUserUpdates() {

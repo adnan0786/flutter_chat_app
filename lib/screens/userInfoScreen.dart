@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/models/userModel.dart';
+import 'package:flutter_chat_app/screens/mediaMessagesScreen.dart';
+import 'package:flutter_chat_app/screens/starMessagesScreen.dart';
+import 'package:get/get.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final UserModel userModel;
 
-  const
-
-  UserInfoScreen({Key? key, required this.userModel}) : super(key: key);
+  const UserInfoScreen({Key? key, required this.userModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +164,121 @@ class UserInfoScreen extends StatelessWidget {
                         Text(userModel.status)
                       ],
                     ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      boxShadow: [
+                        BoxShadow(
+                            color:
+                                Theme.of(context).shadowColor.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: Offset(4, 4))
+                      ]),
+                  child: Column(
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(MediaMessagesScreen());
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Colors.blue.shade700.withOpacity(0.8),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(6))),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.photo_rounded,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                    child: Text(
+                                  "Media, Links & Docs",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                )),
+                                Icon(
+                                  Icons.navigate_next_rounded,
+                                  color: Theme.of(context).disabledColor,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(StarMessagesScreen(), arguments: [
+                              Get.arguments[0],
+                              userModel.name,
+                              userModel.image
+                            ]);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, bottom: 10, top: 10),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xffffdf00).withOpacity(0.8),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(6))),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.star_rounded,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                    child: Text(
+                                  "Starred Messages",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                )),
+                                Icon(
+                                  Icons.navigate_next_rounded,
+                                  color: Theme.of(context).disabledColor,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               ],
