@@ -478,4 +478,19 @@ class FirebaseService {
             .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
             .toList());
   }
+
+  Stream<List<MessageModel>> getMediaMessages(String chatId) {
+    CollectionReference messageRef = FirebaseFirestore.instance
+        .collection("chatList")
+        .doc(chatId)
+        .collection("messages");
+
+    return messageRef
+        .orderBy("date")
+        .where("type", whereIn: ["audio", "video", "image"])
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
+            .toList());
+  }
 }

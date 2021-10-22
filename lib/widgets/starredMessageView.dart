@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_chat_app/utils/appUtils.dart';
 
 class StarredMessageView extends StatelessWidget {
   final MessageModel chatMessageModel;
@@ -20,20 +20,13 @@ class StarredMessageView extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(60.0)),
-                child: Hero(
-                    tag: "profileImage",
-                    child:
-                        // controller.userModel.value.image == ""
-                        //     ?
-                        Image.asset(
-                      "assets/images/default.png",
-                      width: 40,
-                      height: 40,
-                      //     fit: BoxFit.cover)
-                      //     : Image.network(
-                      //   controller.userModel.value.image,
-                      //   fit: BoxFit.cover,
-                    )),
+                child: FadeInImage.assetNetwork(
+                    width: 45,
+                    height: 45,
+                    fit: BoxFit.cover,
+                    placeholder: "assets/images/default.png",
+                    image:
+                        "https://www.whatsappimages.in/wp-content/uploads/2021/01/Boys-Feeling-Very-Sad-Images-Pics-Downlaod.jpg"),
               ),
               SizedBox(
                 width: 10,
@@ -44,7 +37,7 @@ class StarredMessageView extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500),
               )),
               Text(
-                "Yesterday",
+                timeAgo(chatMessageModel.date.toDate(), numericDates: false),
                 style: TextStyle(color: Colors.grey),
               )
             ],
@@ -74,7 +67,7 @@ class StarredMessageView extends StatelessWidget {
                         bottomRight: Radius.circular(20)),
                   ),
                   child: Text(
-                    "data",
+                    chatMessageModel.message,
                     style: TextStyle(
                         color: chatMessageModel.sender == myId
                             ? Colors.white

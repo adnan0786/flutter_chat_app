@@ -186,7 +186,8 @@ class UserInfoScreen extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            Get.to(MediaMessagesScreen());
+                            Get.to(MediaMessagesScreen(),
+                                arguments: [Get.arguments[0]]);
                           },
                           child: Padding(
                             padding: EdgeInsets.only(
