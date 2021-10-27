@@ -17,12 +17,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
 
-class MessageController extends GetxController {
+class MessageController extends GetxController
+    with SingleGetTickerProviderMixin {
   var massageController = TextEditingController();
   var focusNode = FocusNode();
   SoundRecording? soundRecording;
   String? chatId;
   String path = "";
+  late final AnimationController controller;
 
   Timer? _ticker;
   FirebaseService service = FirebaseService();
@@ -46,6 +48,7 @@ class MessageController extends GetxController {
   RxBool isRecording = RxBool(true);
   RxList<MessageModel> chatMessages = RxList();
   RxInt _audioTime = RxInt(0);
+  late Animation<int> animation;
 
   List<MessageModel> get messages => chatMessages;
 
@@ -55,6 +58,13 @@ class MessageController extends GetxController {
   void onInit() async {
     soundRecording = SoundRecording();
     await soundRecording?.init();
+    controller = AnimationController(
+      lowerBound: 35,
+      upperBound: 55,
+      duration: const Duration(milliseconds: 50),
+      vsync: this,
+    );
+    animation = Tween<int>(begin: 35, end: 55).animate(controller);
     super.onInit();
   }
 
@@ -64,6 +74,7 @@ class MessageController extends GetxController {
     massageController.dispose();
     soundRecording?.stop();
     soundRecording = null;
+    controller.dispose();
   }
 
   void showPicker(context) {
@@ -353,6 +364,7 @@ class MessageController extends GetxController {
   }
 
   void startTimer() {
+    _audioTime(0);
     _ticker = Timer.periodic(Duration(seconds: 1), (timer) {
       _audioTime(timer.tick);
     });

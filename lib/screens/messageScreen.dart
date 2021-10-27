@@ -642,40 +642,42 @@ class MessageScreen extends GetView<MessageController> {
                             ),
                           ),
                         ),
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                controller.isRecording.value = true;
-                              },
+                        child: AnimatedBuilder(
+                          builder: (context, child) {
+                            return GestureDetector(
                               onLongPress: () {
+                                controller.controller..forward();
                                 controller.isRecording.value = false;
+                                controller.startRecording();
                               },
-                              onTapCancel: () {
+                              onLongPressEnd: (details) {
+                                controller.controller.reverse();
                                 controller.isRecording.value = true;
+                                controller.stopRecording();
                               },
-                              onFocusChange: (val) {
-                                if (val) {
-                                  controller.isRecording.value = false;
-                                } else {
+                              onLongPressMoveUpdate: (detail) {
+                                if (detail.localPosition.dx < -5) {
+                                  controller.controller.reverse();
                                   controller.isRecording.value = true;
+                                  controller.stopRecording();
                                 }
                               },
-                              borderRadius: BorderRadius.circular(30),
-                              child: Center(
-                                child: Icon(
-                                  Icons.mic_rounded,
-                                  color: Colors.white,
+                              child: Container(
+                                width: controller.controller.value,
+                                height: controller.controller.value,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    shape: BoxShape.circle),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.mic_rounded,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
+                          animation: controller.controller,
                         ),
                       )
                     ],
