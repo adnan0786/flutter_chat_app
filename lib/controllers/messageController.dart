@@ -353,7 +353,7 @@ class MessageController extends GetxController
     if (!isDirectoryExist("ChatApp/media/audio"))
       createDirectory("ChatApp/media/audio");
 
-    path = Directory("ChatApp/media/audio/${DateTime.now()}").path;
+    path = Directory("ChatApp/media/audio/${DateTime.now()}.aac").path;
     startTimer();
     soundRecording?.start(path);
   }
