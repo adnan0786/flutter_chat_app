@@ -153,12 +153,12 @@ String timeAgo(DateTime dateTime, {bool numericDates = true}) {
   }
 }
 
-bool isDirectoryExist(String path) {
-  return Directory(path).existsSync();
+Future<bool> isDirectoryExist(String path)  {
+  return  Directory(path).exists();
 }
 
-void createDirectory(String path) {
-  Directory(path).createSync();
+Future<Directory> createDirectory(String path) {
+  return Directory(path).create();
 }
 
 Future<File?> generateThumbnail(File? file) async {

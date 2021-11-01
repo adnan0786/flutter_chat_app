@@ -1,16 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
-import 'package:just_audio/just_audio.dart';
 
 class SoundRecording {
   FlutterSoundRecorder? _audioRecording;
   FlutterSoundPlayer? soundPlayer;
-  AudioPlayer? player;
+
+
+  get isPlaying => soundPlayer?.isPlaying;
 
   Future init() async {
     _audioRecording = FlutterSoundRecorder();
     soundPlayer = FlutterSoundPlayer();
+    await soundPlayer?.openAudioSession();
     await _audioRecording?.openAudioSession();
-    player = AudioPlayer();
   }
 
   void destroy() {
@@ -18,18 +20,32 @@ class SoundRecording {
     _audioRecording = null;
   }
 
-  Future stop() async {
+  void destroyPlayer() {
+    soundPlayer?.closeAudioSession();
+    soundPlayer = null;
+  }
+
+  Future stopRecording() async {
     await _audioRecording?.stopRecorder();
   }
 
-  Future start(String path) async {
-    await player?.setAsset("assets/audio/recording_start.wav");
+  Future startRecording(String path) async {
     await _audioRecording?.startRecorder(toFile: path);
   }
 
-  Future startPlayer(String path) async {
-    await soundPlayer?.startPlayer(
-      fromURI: path,
-    );
+  Future<Duration?> startPlayer(String path) async {
+    if (isPlaying != null && isPlaying == true) {
+      await soundPlayer?.stopPlayer();
+      return _playAudio(path);
+    } else
+      return _playAudio(path);
+  }
+
+  Future<Duration?> _playAudio(String path) async {
+    return soundPlayer?.startPlayer(fromURI: path);
+  }
+
+  Future stopPlayer() async {
+    await soundPlayer?.stopPlayer();
   }
 }

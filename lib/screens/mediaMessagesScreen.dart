@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/mediaController.dart';
+import 'package:flutter_chat_app/widgets/mediaAudioView.dart';
 import 'package:flutter_chat_app/widgets/mediaImageView.dart';
 import 'package:flutter_chat_app/widgets/mediaVideoView.dart';
 import 'package:get/get.dart';
@@ -52,7 +53,7 @@ class MediaMessagesScreen extends GetView<MediaController> {
               children: <Widget>[
                 MediaImageView(imageMessages: controller.mediaMessages),
                 MediaVideoView(imageMessages: controller.mediaMessages),
-                Icon(Icons.directions_car, size: 350),
+                MediaAudioView(imageMessages: controller.mediaMessages),
               ],
             ))),
       ),

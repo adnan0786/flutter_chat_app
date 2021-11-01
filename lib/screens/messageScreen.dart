@@ -19,6 +19,7 @@ import 'package:flutter_chat_app/widgets/loadingLayout.dart';
 import 'package:flutter_chat_app/widgets/misscallMessageView.dart';
 import 'package:flutter_chat_app/widgets/textMessageView.dart';
 import 'package:flutter_chat_app/widgets/videoMessageView.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:get/get.dart';
@@ -331,7 +332,8 @@ class MessageScreen extends GetView<MessageController> {
                                                   : AudioMessageView(
                                                       messageModel: controller
                                                           .messages[index],
-                                                      myId: controller.myId)),
+                                                      myId: controller.myId,
+                                                    )),
                             );
                           },
                         )

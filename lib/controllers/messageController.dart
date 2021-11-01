@@ -14,6 +14,7 @@ import 'package:flutter_chat_app/utils/appUtils.dart';
 import 'package:flutter_chat_app/utils/soundRecorder.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -55,9 +56,9 @@ class MessageController extends GetxController
   int get time => _audioTime.value;
 
   @override
-  void onInit() async {
+  void onInit() {
     soundRecording = SoundRecording();
-    await soundRecording?.init();
+    soundRecording?.init();
     controller = AnimationController(
       lowerBound: 35,
       upperBound: 55,
@@ -72,9 +73,12 @@ class MessageController extends GetxController
   void onClose() {
     super.onClose();
     massageController.dispose();
-    soundRecording?.stop();
+    soundRecording?.stopRecording();
     soundRecording = null;
     controller.dispose();
+    scrollController.dispose();
+    soundRecording?.destroy();
+    soundRecording?.destroyPlayer();
   }
 
   void showPicker(context) {
@@ -349,18 +353,30 @@ class MessageController extends GetxController
     }
   }
 
-  void startRecording() {
-    if (!isDirectoryExist("ChatApp/media/audio"))
-      createDirectory("ChatApp/media/audio");
+  void startRecording() async {
+    Directory? baseDir = await getApplicationDocumentsDirectory();
 
-    path = Directory("ChatApp/media/audio/${DateTime.now()}.aac").path;
+    var dir = Directory("${baseDir.path}/ChatApp/media/audio");
+    bool dirExists = await dir.exists();
+    Directory createdDirec;
+    if (!dirExists)
+      createdDirec = await dir.create(recursive: true);
+    else
+      createdDirec = Directory(dir.path);
+
+    path = "${createdDirec.path}/${DateTime.now()}.aac";
     startTimer();
-    soundRecording?.start(path);
+    soundRecording?.startRecording(path);
   }
 
   void stopRecording() {
     _ticker?.cancel();
-    soundRecording?.stop();
+    soundRecording?.stopRecording();
+    service.sendAudioMessage(
+        chatId!,
+        MessageModel("", myId, userModel.value.uId, 'message', Timestamp.now(),
+            "audio", false, false, ""),
+        File(path));
   }
 
   void startTimer() {
@@ -379,5 +395,13 @@ class MessageController extends GetxController
 
   void readMessage(String messageId) {
     service.readMessage(messageId, chatId!);
+  }
+
+  void startPlayer(String path) async {
+    await soundRecording?.startPlayer(path);
+  }
+
+  void stopPlayer() async {
+    await soundRecording?.stopPlayer();
   }
 }

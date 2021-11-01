@@ -2,9 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/messageController.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:get/get.dart';
-
-import '../appTheme.dart';
 
 class AudioMessageView extends StatelessWidget {
   final MessageModel messageModel;
@@ -20,7 +19,7 @@ class AudioMessageView extends StatelessWidget {
       Get.find<MessageController>().readMessage(messageModel.id);
     return Container(
       width: MediaQuery.of(context).size.width * 0.55,
-      padding: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+      padding: EdgeInsets.only(left: 0, right: 10, top: 5, bottom: 5),
       child: Align(
         alignment: (messageModel.sender != myId
             ? Alignment.topLeft
@@ -34,12 +33,12 @@ class AudioMessageView extends StatelessWidget {
                   offset: Offset(4, 4))
             ],
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
                 bottomLeft:
-                    Radius.circular(messageModel.sender != myId ? 0 : 20),
+                    Radius.circular(messageModel.sender != myId ? 0 : 30),
                 bottomRight:
-                    Radius.circular(messageModel.sender != myId ? 20 : 0)),
+                    Radius.circular(messageModel.sender != myId ? 30 : 0)),
             color: messageModel.sender != myId
                 ? Colors.grey.shade200
                 : Theme.of(context).primaryColor.withOpacity(0.2),
@@ -47,49 +46,27 @@ class AudioMessageView extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: Row(
             children: [
-              Icon(
-                Icons.play_arrow,
-                color:
-                    messageModel.sender != myId ? Colors.white : kPrimaryColor,
-              ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultPadding / 2),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 2,
+                child: Container(
+                  height: 48,
+                  child: SoundPlayerUI.fromLoader(
+                    (context) {
+                      return Future.value(
+                          Track(trackPath: messageModel.message));
+                    },
+                    backgroundColor: Colors.transparent,
+                    iconColor: Theme.of(context).primaryColor,
+                    disabledIconColor: messageModel.sender != myId
+                        ? Colors.black
+                        : Colors.white,
+                    sliderThemeData: SliderThemeData(),
+                    textStyle: TextStyle(
                         color: messageModel.sender != myId
-                            ? Colors.white
-                            : kPrimaryColor.withOpacity(0.4),
-                      ),
-                      Positioned(
-                        left: 0,
-                        child: Container(
-                          height: 8,
-                          width: 8,
-                          decoration: BoxDecoration(
-                            color: messageModel.sender != myId
-                                ? Colors.white
-                                : kPrimaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      )
-                    ],
+                            ? Colors.black
+                            : Colors.white),
                   ),
                 ),
-              ),
-              Text(
-                "0.37",
-                style: TextStyle(
-                    fontSize: 12,
-                    color: messageModel.sender != myId ? Colors.white : null),
-              ),
+              )
             ],
           ),
         ),
