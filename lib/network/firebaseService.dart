@@ -479,7 +479,7 @@ class FirebaseService {
             .toList());
   }
 
-  Stream<List<MessageModel>> getMediaMessages(String chatId) {
+  Stream<List<MessageModel>> getMediaVideoMessages(String chatId) {
     CollectionReference messageRef = FirebaseFirestore.instance
         .collection("chatList")
         .doc(chatId)
@@ -487,7 +487,37 @@ class FirebaseService {
 
     return messageRef
         .orderBy("date")
-        .where("type", whereIn: ["audio", "video", "image"])
+        .where("type", isEqualTo: "video")
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
+            .toList());
+  }
+
+  Stream<List<MessageModel>> getMediaImageMessages(String chatId) {
+    CollectionReference messageRef = FirebaseFirestore.instance
+        .collection("chatList")
+        .doc(chatId)
+        .collection("messages");
+
+    return messageRef
+        .orderBy("date")
+        .where("type", isEqualTo: "image")
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
+            .toList());
+  }
+
+  Stream<List<MessageModel>> getMediaAudioMessages(String chatId) {
+    CollectionReference messageRef = FirebaseFirestore.instance
+        .collection("chatList")
+        .doc(chatId)
+        .collection("messages");
+
+    return messageRef
+        .orderBy("date")
+        .where("type", isEqualTo: "audio")
         .snapshots()
         .map((event) => event.docs
             .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))

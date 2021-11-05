@@ -19,10 +19,10 @@ import 'package:flutter_chat_app/widgets/loadingLayout.dart';
 import 'package:flutter_chat_app/widgets/misscallMessageView.dart';
 import 'package:flutter_chat_app/widgets/textMessageView.dart';
 import 'package:flutter_chat_app/widgets/videoMessageView.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import '../appTheme.dart';
 
@@ -137,7 +137,7 @@ class MessageScreen extends GetView<MessageController> {
                               ? "typing..."
                               : controller.user.online == "true"
                                   ? "Online"
-                                  : controller.user.online,
+                                  : timeAgo(DateFormat("yyyy-MM-dd hh:mm:ss").parse(controller.user.online)),
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.grey.shade600, fontSize: 13),

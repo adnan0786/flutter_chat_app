@@ -10,6 +10,8 @@ import 'package:flutter_chat_app/models/chatMessageModel.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
 import 'package:flutter_chat_app/models/userModel.dart';
 import 'package:flutter_chat_app/network/firebaseService.dart';
+import 'package:flutter_chat_app/screens/contactScreen.dart';
+import 'package:flutter_chat_app/screens/locationPickerScreen.dart';
 import 'package:flutter_chat_app/utils/appUtils.dart';
 import 'package:flutter_chat_app/utils/soundRecorder.dart';
 import 'package:get/get.dart';
@@ -17,6 +19,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
+
+import 'contactController.dart';
 
 class MessageController extends GetxController
     with SingleGetTickerProviderMixin {
@@ -41,7 +45,7 @@ class MessageController extends GetxController
           number: 'number',
           status: 'status',
           typing: "false",
-          online: DateTime.now().toString())
+          online: "true")
       .obs;
 
   UserModel get user => userModel.value;
@@ -177,8 +181,6 @@ class MessageController extends GetxController
                 ),
                 title: new Text('Contact'),
                 onTap: () async {
-                  Navigator.pop(context);
-                  showErrorSnackBar(context, "Contact", "Pick Contact", false);
                 },
               ),
               ListTile(
@@ -188,9 +190,10 @@ class MessageController extends GetxController
                 ),
                 title: new Text('Location'),
                 onTap: () async {
-                  Navigator.pop(context);
-                  showErrorSnackBar(
-                      context, "Location", "Pick Location", false);
+                  // Navigator.pop(context);
+                  // showErrorSnackBar(
+                  //     context, "Location", "Pick Location", false);
+                  Get.to(LocationPickerScreen());
                 },
               ),
             ],

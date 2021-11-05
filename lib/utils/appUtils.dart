@@ -131,7 +131,7 @@ String timeAgo(DateTime dateTime, {bool numericDates = true}) {
   final difference = date2.difference(dateTime);
 
   if (difference.inDays > 8) {
-    return dateTime.toString();
+    return "${dateTime.day} days ago";
   } else if ((difference.inDays / 7).floor() >= 1) {
     return (numericDates) ? '1 week ago' : 'Last week';
   } else if (difference.inDays >= 2) {
@@ -153,8 +153,8 @@ String timeAgo(DateTime dateTime, {bool numericDates = true}) {
   }
 }
 
-Future<bool> isDirectoryExist(String path)  {
-  return  Directory(path).exists();
+Future<bool> isDirectoryExist(String path) {
+  return Directory(path).exists();
 }
 
 Future<Directory> createDirectory(String path) {

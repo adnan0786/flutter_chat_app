@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/chatController.dart';
 import 'package:flutter_chat_app/screens/messageScreen.dart';
 import 'package:flutter_chat_app/utils/appUtils.dart';
-import 'package:flutter_chat_app/widgets/ChatListView.dart';
+import 'package:flutter_chat_app/widgets/chatListView.dart';
 import 'package:flutter_chat_app/widgets/loadingLayout.dart';
 import 'package:get/get.dart';
 

@@ -1,3 +1,4 @@
+import 'package:flutter_chat_app/controllers/messageController.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
 import 'package:flutter_chat_app/network/firebaseService.dart';
 import 'package:get/get.dart';
@@ -5,11 +6,28 @@ import 'package:get/get.dart';
 class MediaController extends GetxController {
   FirebaseService service = FirebaseService();
 
-  RxList<MessageModel> mediaMessages = RxList();
+  RxList<MessageModel> mediaVideoMessages = RxList();
 
-  List<MessageModel> get messages => mediaMessages;
+  RxList<MessageModel> mediaAudioMessages = RxList();
 
-  void readMediaMessages(String chatId) {
-    mediaMessages.bindStream(service.getMediaMessages(chatId));
+  RxList<MessageModel> mediaImageMessages = RxList();
+  late String chatId;
+
+  void readMediaVideoMessages(String chatId) {
+    mediaVideoMessages.bindStream(service.getMediaVideoMessages(chatId));
+  }
+
+  void readMediaImagesMessages(String chatId) {
+    mediaImageMessages.bindStream(service.getMediaImageMessages(chatId));
+  }
+
+  void readMediaAudioMessages(String chatId) {
+    mediaAudioMessages.bindStream(service.getMediaAudioMessages(chatId));
+  }
+
+  @override
+  void onClose() {
+    Get.find<MessageController>().stopPlayer();
+    super.onClose();
   }
 }

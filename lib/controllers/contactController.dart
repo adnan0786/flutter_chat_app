@@ -15,6 +15,7 @@ class ContactController extends GetxController {
   FirebaseService service = FirebaseService();
   late String userNumber = "";
   String myNumber = FirebaseAuth.instance.currentUser!.phoneNumber!;
+  bool isNumber = false;
 
   @override
   void onInit() async {
@@ -80,7 +81,7 @@ class ContactController extends GetxController {
       List<UserModel> appContacts = await service.getAppContacts();
       appContacts.forEach((app) {
         for (var mobile in mobileContact) {
-          if (app.number == mobile.number && app.number !=myNumber) {
+          if (app.number == mobile.number && app.number != myNumber) {
             contacts.add(UserModel(
                 uId: app.uId,
                 name: mobile.name,

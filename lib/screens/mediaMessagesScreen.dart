@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/mediaController.dart';
+import 'package:flutter_chat_app/controllers/messageController.dart';
 import 'package:flutter_chat_app/widgets/mediaAudioView.dart';
 import 'package:flutter_chat_app/widgets/mediaImageView.dart';
 import 'package:flutter_chat_app/widgets/mediaVideoView.dart';
@@ -11,7 +12,7 @@ class MediaMessagesScreen extends GetView<MediaController> {
   @override
   Widget build(BuildContext context) {
     Get.put(MediaController());
-    controller.readMediaMessages(Get.arguments[0]);
+    controller.chatId = Get.arguments[0];
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -49,13 +50,19 @@ class MediaMessagesScreen extends GetView<MediaController> {
                 ),
               ];
             },
-            body: Obx(()=>TabBarView(
+            body: TabBarView(
               children: <Widget>[
-                MediaImageView(imageMessages: controller.mediaMessages),
-                MediaVideoView(imageMessages: controller.mediaMessages),
-                MediaAudioView(imageMessages: controller.mediaMessages),
+                MediaImageView(controller: controller),
+                MediaVideoView(controller: controller),
+                MediaAudioView(
+                  controller: controller,
+                  callback: (messageModel) {
+                    Get.find<MessageController>()
+                        .startPlayer(messageModel.message);
+                  },
+                ),
               ],
-            ))),
+            )),
       ),
     );
   }
