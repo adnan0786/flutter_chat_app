@@ -4,6 +4,7 @@ class AppConstants {
   static String chatImagePath = "images/${DateTime.now()}";
   static String chatVideoPath = "videos/${DateTime.now()}";
   static String APP_ID = "04520808688f42e88041802bc0cbbd42";
+  static List<String> supportedFiles = ["pdf", "txt", "docx"];
   static String textNotification = "100";
   static String imageNotification = "200";
   static String CHANNEL_NAME = "testing";

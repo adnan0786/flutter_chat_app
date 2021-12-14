@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/chatController.dart';
 import 'package:flutter_chat_app/screens/messageScreen.dart';
-import 'package:flutter_chat_app/utils/appUtils.dart';
+import 'package:flutter_chat_app/utils/cusotmSearchDelegate.dart';
 import 'package:flutter_chat_app/widgets/chatListView.dart';
 import 'package:flutter_chat_app/widgets/loadingLayout.dart';
 import 'package:get/get.dart';
@@ -14,6 +14,17 @@ class ChatListScreen extends GetView<ChatController> {
     return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showSearch(
+                      context: context, delegate: CustomSearchDelegate(controller.chats));
+                },
+                icon: Icon(
+                  Icons.search_rounded,
+                  color: Colors.black,
+                ))
+          ],
           backgroundColor: Theme.of(context).backgroundColor,
           title: Text(
             "Messages",

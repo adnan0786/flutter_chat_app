@@ -177,6 +177,22 @@ class FirebaseService {
     }
   }
 
+  void sendLocationMessage(String chatId, MessageModel messageModel) {
+    try {
+      Map<String, dynamic> map = Map();
+      map["lastMessage"] = messageModel.message;
+      map["lastDate"] = DateTime.now();
+      final ref = FirebaseFirestore.instance.collection("chatList").doc(chatId);
+      var messageDoc = ref.collection("messages").doc();
+      messageModel.id = messageDoc.id;
+      messageDoc.set(messageModel.toJson()).then((value) {
+        ref.update(map);
+      });
+    } on Exception catch (e) {
+      printError(info: e.toString());
+    }
+  }
+
   void sendPhotoMessage(
       String chatId, MessageModel messageModel, File image) async {
     try {
@@ -522,5 +538,74 @@ class FirebaseService {
         .map((event) => event.docs
             .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
             .toList());
+  }
+
+  Stream<List<MessageModel>> getMediaFileMessages(String chatId) {
+    CollectionReference messageRef = FirebaseFirestore.instance
+        .collection("chatList")
+        .doc(chatId)
+        .collection("messages");
+
+    return messageRef
+        .orderBy("date")
+        .where("type", whereIn: ["pdf", "docx", "txt"])
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
+            .toList());
+  }
+
+  void sendFileMessage(
+      String chatId, MessageModel messageModel, File file) async {
+    try {
+      String path = "file/${DateTime.now()}";
+      String filePath = await uploadUserImage(path, chatId, file);
+
+      if (File(messageModel.thumbnail).existsSync())
+        File(messageModel.thumbnail).deleteSync();
+      messageModel.message = filePath;
+      var messageDoc = FirebaseFirestore.instance
+          .collection("chatList")
+          .doc(chatId)
+          .collection("messages")
+          .doc();
+      messageModel.id = messageDoc.id;
+      messageDoc.set(messageModel.toJson());
+    } on Exception catch (e) {
+      printError(info: e.toString());
+    }
+  }
+
+  void deleteChatMessage(MessageModel messageModel, String chatId) async {
+    switch (messageModel.type) {
+      case "text":
+      case "location":
+      case "call":
+        FirebaseFirestore.instance
+            .collection("chatList")
+            .doc(chatId)
+            .collection("messages")
+            .doc(messageModel.id)
+            .delete();
+        break;
+
+      case "image":
+      case "video":
+      case "audio":
+      case "pdf":
+      case "txt":
+      case "pdf":
+      case "docx":
+        await FirebaseStorage.instance
+            .refFromURL(messageModel.message)
+            .delete();
+        FirebaseFirestore.instance
+            .collection("chatList")
+            .doc(chatId)
+            .collection("messages")
+            .doc(messageModel.id)
+            .delete();
+        break;
+    }
   }
 }

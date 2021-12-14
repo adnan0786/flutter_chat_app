@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/mediaController.dart';
 import 'package:flutter_chat_app/controllers/messageController.dart';
 import 'package:flutter_chat_app/widgets/mediaAudioView.dart';
+import 'package:flutter_chat_app/widgets/mediaFileView.dart';
 import 'package:flutter_chat_app/widgets/mediaImageView.dart';
 import 'package:flutter_chat_app/widgets/mediaVideoView.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,7 @@ class MediaMessagesScreen extends GetView<MediaController> {
     Get.put(MediaController());
     controller.chatId = Get.arguments[0];
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: NestedScrollView(
@@ -45,6 +46,7 @@ class MediaMessagesScreen extends GetView<MediaController> {
                       Tab(child: Text('Photos')),
                       Tab(child: Text('Videos')),
                       Tab(child: Text('Audios')),
+                      Tab(child: Text('Files')),
                     ],
                   ),
                 ),
@@ -61,6 +63,7 @@ class MediaMessagesScreen extends GetView<MediaController> {
                         .startPlayer(messageModel.message);
                   },
                 ),
+                MediaFileView(controller: controller)
               ],
             )),
       ),

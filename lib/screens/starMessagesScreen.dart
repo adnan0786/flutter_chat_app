@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/starredMessageController.dart';
+import 'package:flutter_chat_app/widgets/starFileView.dart';
+import 'package:flutter_chat_app/widgets/starImageView.dart';
 import 'package:flutter_chat_app/widgets/starredMessageView.dart';
 import 'package:get/get.dart';
 
@@ -16,16 +18,30 @@ class StarMessagesScreen extends GetView<StarredMessageController> {
 
     return Obx(() => Scaffold(
           appBar: AppBar(
-            title: Text("Starred Messages"),
+            backgroundColor: Theme.of(context).backgroundColor,
+            iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+            title: Text("Starred Messages",
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1?.color,
+                    fontWeight: FontWeight.bold)),
           ),
           body: ListView.builder(
               padding: EdgeInsets.only(top: 20),
               itemCount: controller.messages.length,
               physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                return StarredMessageView(
-                    chatMessageModel: controller.messages[index],
-                    myId: controller.myId);
+                return controller.messages[index].type == "text"
+                    ? StarredMessageView(
+                        chatMessageModel: controller.messages[index],
+                        myId: controller.myId)
+                    : controller.messages[index].type == "image"
+                        ? StarImageView(
+                            chatMessageModel: controller.messages[index],
+                            myId: controller.myId,
+                          )
+                        : StarFileView(
+                            chatMessageModel: controller.messages[index],
+                            myId: controller.myId);
               }),
         ));
   }

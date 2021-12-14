@@ -11,6 +11,8 @@ class MediaController extends GetxController {
   RxList<MessageModel> mediaAudioMessages = RxList();
 
   RxList<MessageModel> mediaImageMessages = RxList();
+
+  RxList<MessageModel> mediaFileMessages = RxList();
   late String chatId;
 
   void readMediaVideoMessages(String chatId) {
@@ -23,6 +25,10 @@ class MediaController extends GetxController {
 
   void readMediaAudioMessages(String chatId) {
     mediaAudioMessages.bindStream(service.getMediaAudioMessages(chatId));
+  }
+
+  void readMediaFileMessages(String chatId) {
+    mediaFileMessages.bindStream(service.getMediaFileMessages(chatId));
   }
 
   @override

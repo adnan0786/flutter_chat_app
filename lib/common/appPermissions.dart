@@ -17,6 +17,10 @@ class AppPermissions{
   Future<PermissionStatus> contactPermission() {
     return Permission.contacts.status;
   }
+
+  Future<PermissionStatus> locationPermission() {
+    return Permission.locationAlways.status;
+  }
 }
 
 

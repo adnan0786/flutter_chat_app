@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/mediaController.dart';
-import 'package:flutter_chat_app/models/messageModel.dart';
 import 'package:flutter_chat_app/screens/photoPreviewScreen.dart';
 import 'package:get/get.dart';
 

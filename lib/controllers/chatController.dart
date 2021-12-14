@@ -15,7 +15,6 @@ class ChatController extends GetxController {
   List<ChatModel> get chats => userChats;
   User user = FirebaseAuth.instance.currentUser!;
 
-
   @override
   void onInit() {
     super.onInit();

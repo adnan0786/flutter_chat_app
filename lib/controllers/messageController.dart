@@ -1,26 +1,27 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/common/appConstants.dart';
 import 'package:flutter_chat_app/common/appPermissions.dart';
 import 'package:flutter_chat_app/models/chatMessageModel.dart';
+import 'package:flutter_chat_app/models/locationModel.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
 import 'package:flutter_chat_app/models/userModel.dart';
 import 'package:flutter_chat_app/network/firebaseService.dart';
-import 'package:flutter_chat_app/screens/contactScreen.dart';
 import 'package:flutter_chat_app/screens/locationPickerScreen.dart';
 import 'package:flutter_chat_app/utils/appUtils.dart';
 import 'package:flutter_chat_app/utils/soundRecorder.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
-
-import 'contactController.dart';
 
 class MessageController extends GetxController
     with SingleGetTickerProviderMixin {
@@ -29,12 +30,13 @@ class MessageController extends GetxController
   SoundRecording? soundRecording;
   String? chatId;
   String path = "";
+  RxString typing = RxString("");
   late final AnimationController controller;
 
   Timer? _ticker;
   FirebaseService service = FirebaseService();
   late ChatMessageModel replyMessage;
-  final appPermissions = AppPermissions();
+  AppPermissions appPermissions = AppPermissions();
   String myId = FirebaseAuth.instance.currentUser!.uid;
   String myName = FirebaseAuth.instance.currentUser!.displayName!;
   ScrollController scrollController = new ScrollController();
@@ -176,11 +178,13 @@ class MessageController extends GetxController
               ),
               ListTile(
                 leading: new Icon(
-                  Icons.contact_phone_rounded,
+                  Icons.attach_file_rounded,
                   color: Theme.of(context).primaryColor,
                 ),
-                title: new Text('Contact'),
+                title: new Text('Documents'),
                 onTap: () async {
+                  Get.back();
+                  pickFile(context);
                 },
               ),
               ListTile(
@@ -190,10 +194,8 @@ class MessageController extends GetxController
                 ),
                 title: new Text('Location'),
                 onTap: () async {
-                  // Navigator.pop(context);
-                  // showErrorSnackBar(
-                  //     context, "Location", "Pick Location", false);
-                  Get.to(LocationPickerScreen());
+                  Navigator.pop(context);
+                  pickLocation(context);
                 },
               ),
             ],
@@ -233,8 +235,26 @@ class MessageController extends GetxController
     });
   }
 
-  void checkUserUpdates() {
+  void sendLocationMessage(MessageModel messageModel) {
+    service.sendTextMessage(chatId!, messageModel);
+  }
+
+  void checkUserUpdates() async {
+    // controller.user.typing == controller.myId
+    //     ? "typing..."
+    //     : controller.user.online == "true"
+    //     ? "Online"
+    // : timeAgo(DateFormat("yyyy-MM-dd hh:mm:ss")
+    //     .parse(controller.user.online)
+
     userModel.bindStream(service.userUpdates(userModel.value.uId));
+    userModel.listen((model) {
+      model.typing == myId
+          ? typing.value = "typing"
+          : model.online == "true"
+              ? typing.value = "Online"
+              : typing.value = "Offline";
+    });
   }
 
   void createChat(MessageModel messageModel) async {
@@ -406,5 +426,127 @@ class MessageController extends GetxController
 
   void stopPlayer() async {
     await soundRecording?.stopPlayer();
+  }
+
+  void pickLocation(context) async {
+    var status = await appPermissions.locationPermission();
+    switch (status) {
+      case PermissionStatus.denied:
+        var status = await Permission.locationAlways.request().isGranted;
+        if (!status) {
+          showErrorSnackBar(
+              context, "Location Permission Denied", "Permission Denied", true);
+        } else {
+          var result = await Get.to(LocationPickerScreen());
+          if (result != null) {
+            LatLng selectedLocation = result[0];
+            sendLocationMessage(MessageModel(
+                "",
+                myId,
+                user.uId,
+                jsonEncode(LocationModel(
+                    lat: selectedLocation.latitude,
+                    lng: selectedLocation.longitude)),
+                Timestamp.now(),
+                "location",
+                false,
+                false,
+                ""));
+          }
+        }
+        break;
+      case PermissionStatus.granted:
+        var result = await Get.to(LocationPickerScreen());
+        if (result != null) {
+          LatLng selectedLocation = result[0];
+          sendLocationMessage(MessageModel(
+              "",
+              myId,
+              user.uId,
+              jsonEncode(LocationModel(
+                  lat: selectedLocation.latitude,
+                  lng: selectedLocation.longitude)),
+              Timestamp.now(),
+              "location",
+              false,
+              false,
+              ""));
+        }
+
+        break;
+      case PermissionStatus.restricted:
+        showErrorSnackBar(
+            context, "Your device not supported", " Location Permission", true);
+        break;
+      case PermissionStatus.limited:
+        showErrorSnackBar(
+            context, "Application has limited access", "Limited Access", true);
+        break;
+      case PermissionStatus.permanentlyDenied:
+        await openAppSettings();
+        break;
+    }
+  }
+
+  void pickFile(context) async {
+    var status = await appPermissions.storagePermission();
+    switch (status) {
+      case PermissionStatus.denied:
+        var status = await Permission.storage.request().isGranted;
+        if (!status) {
+          showErrorSnackBar(
+              context, "Storage Permission Denied", "Permission Denied", true);
+        } else {
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+              allowedExtensions: ["pdf", "docx", "txt"], type: FileType.custom);
+
+          if (result != null) {
+            File file = File(result.files.single.path!);
+            service.sendFileMessage(
+                chatId!,
+                MessageModel("", myId, user.uId, "", Timestamp.now(),
+                    result.files.single.extension!, false, false, ""),
+                file);
+          }
+        }
+        break;
+      case PermissionStatus.granted:
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowedExtensions: ["pdf", "docx", "txt"], type: FileType.custom);
+        if (result != null) {
+          File file = File(result.files.single.path!);
+
+          service.sendFileMessage(
+              chatId!,
+              MessageModel(
+                  "",
+                  myId,
+                  user.uId,
+                  "",
+                  Timestamp.now(),
+                  result.files.single.extension!,
+                  false,
+                  false,
+                  result.files.single.name),
+              file);
+        }
+
+        break;
+      case PermissionStatus.restricted:
+        showErrorSnackBar(
+            context, "Your device not supported", " Location Permission", true);
+        break;
+      case PermissionStatus.limited:
+        showErrorSnackBar(
+            context, "Application has limited access", "Limited Access", true);
+        break;
+      case PermissionStatus.permanentlyDenied:
+        await openAppSettings();
+        break;
+    }
+  }
+
+  void deleteMessage(MessageModel messageModel) {
+    service.deleteChatMessage(messageModel, chatId!);
   }
 }
