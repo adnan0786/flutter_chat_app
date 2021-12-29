@@ -7,6 +7,8 @@ import 'package:flutter_chat_app/common/appConstants.dart';
 import 'package:flutter_chat_app/models/callDetailModel.dart';
 import 'package:flutter_chat_app/models/chatModel.dart';
 import 'package:flutter_chat_app/models/messageModel.dart';
+import 'package:flutter_chat_app/models/status.dart';
+import 'package:flutter_chat_app/models/statusModel.dart';
 import 'package:flutter_chat_app/models/userModel.dart';
 import 'package:flutter_chat_app/screens/verificationScreen.dart';
 import 'package:flutter_chat_app/utils/appUtils.dart';
@@ -118,20 +120,32 @@ class FirebaseService {
     }
   }
 
-  Future<String> isChatExist(String userId) async {
+  Future<String?> isChatExist(String userId) async {
     try {
       FirebaseAuth auth = FirebaseAuth.instance;
       CollectionReference chatRef =
           FirebaseFirestore.instance.collection("chatList");
 
+      // QuerySnapshot querySnapshot = await chatRef
+      //     .where("members", arrayContainsAny: [auth.currentUser?.uid])
+      //     .get(GetOptions(source: Source.serverAndCache))
+      //     .then((value) =>
+      //         chatRef.where("members", arrayContainsAny: [userId]).get());
       QuerySnapshot querySnapshot = await chatRef
-          .where("members", arrayContainsAny: [auth.currentUser?.uid])
-          .get(GetOptions(source: Source.serverAndCache))
-          .then((value) =>
-              chatRef.where("members", arrayContainsAny: [userId]).get());
+          .where("members", arrayContainsAny: [auth.currentUser?.uid]).get(
+              GetOptions(source: Source.serverAndCache));
 
-      if (querySnapshot.size > 0 && querySnapshot.docs[0].exists) {
-        return querySnapshot.docs[0].id;
+      if (querySnapshot.size > 0) {
+        for (var snap in querySnapshot.docs) {
+          var chatModel =
+              ChatModel.fromJson(snap.data() as Map<String, dynamic>);
+          if ((chatModel.members[0].toString() == userId &&
+                  chatModel.members[1].toString() == auth.currentUser?.uid) ||
+              (chatModel.members[0].toString() == auth.currentUser?.uid &&
+                  chatModel.members[1].toString() == userId)) {
+            return snap.id;
+          }
+        }
       } else {
         return "";
       }
@@ -607,5 +621,50 @@ class FirebaseService {
             .delete();
         break;
     }
+  }
+
+  Stream<List<Status>> getMyStatus(String myId) {
+    CollectionReference messageRef = FirebaseFirestore.instance
+        .collection("status")
+        .doc(myId)
+        .collection("stories");
+
+    return messageRef.orderBy("date").snapshots().map((event) => event.docs
+        .map((e) => Status.fromJson(e.data() as Map<String, dynamic>))
+        .toList());
+  }
+
+  void addNewStatus(Status status, String userId, String name, String image) {
+    DocumentReference reference =
+        FirebaseFirestore.instance.collection("status").doc(userId);
+    StatusModel statusModel =
+        StatusModel(Timestamp.now(), userId, name, image);
+    reference.set(statusModel.toJson());
+    String statusId = reference.collection("stories").doc().id;
+    status.id = statusId;
+    reference.collection("stories").doc(statusId).set(status.toJson());
+  }
+
+  Stream<List<StatusModel>> getAllStatus() {
+    CollectionReference messageRef =
+        FirebaseFirestore.instance.collection("status");
+
+    return messageRef
+        .orderBy("lastUpdate")
+        .snapshots()
+        .map((event) => event.docs.map((e) {
+              List<Status> statusList = [];
+              e.reference
+                  .collection("stories")
+                  .get()
+                  .then((value) {
+                    printInfo(info:"${value.docs[0].id}");
+              });
+              var statusModel =
+                  StatusModel.fromJson(e.data() as Map<String, dynamic>);
+              statusModel.stories = statusList;
+
+              return statusModel;
+            }).toList());
   }
 }
