@@ -637,8 +637,7 @@ class FirebaseService {
   void addNewStatus(Status status, String userId, String name, String image) {
     DocumentReference reference =
         FirebaseFirestore.instance.collection("status").doc(userId);
-    StatusModel statusModel =
-        StatusModel(Timestamp.now(), userId, name, image);
+    StatusModel statusModel = StatusModel(Timestamp.now(), userId, name, image);
     reference.set(statusModel.toJson());
     String statusId = reference.collection("stories").doc().id;
     status.id = statusId;
@@ -648,23 +647,39 @@ class FirebaseService {
   Stream<List<StatusModel>> getAllStatus() {
     CollectionReference messageRef =
         FirebaseFirestore.instance.collection("status");
+    return messageRef.orderBy("lastUpdate").snapshots().map((event) => event
+        .docs
+        .map((e) => StatusModel.fromJson(e.data() as Map<String, dynamic>))
+        .toList());
+  }
 
-    return messageRef
-        .orderBy("lastUpdate")
-        .snapshots()
-        .map((event) => event.docs.map((e) {
-              List<Status> statusList = [];
-              e.reference
-                  .collection("stories")
-                  .get()
-                  .then((value) {
-                    printInfo(info:"${value.docs[0].id}");
-              });
-              var statusModel =
-                  StatusModel.fromJson(e.data() as Map<String, dynamic>);
-              statusModel.stories = statusList;
+  Future<List<Status>> getStories(String id) async {
+    printInfo(info: id);
+    var stories = await FirebaseFirestore.instance
+        .collection("status")
+        .doc(id.trim())
+        .collection("stories")
+        .get();
 
-              return statusModel;
-            }).toList());
+    return stories.docs.map((e) => Status.fromJson(e.data())).toList();
+  }
+
+  void seenStatus(List<dynamic> members, String userId, String statusId) {
+    Map<String, dynamic> map = Map();
+    map["members"] = members;
+    FirebaseFirestore.instance
+        .collection("status")
+        .doc(userId)
+        .collection("stories")
+        .doc(statusId)
+        .update(map);
+  }
+
+  Future<UserModel> getStatusMemberDetail(String userId) {
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .get()
+        .then((value) => UserModel.fromJson(value.data()!));
   }
 }

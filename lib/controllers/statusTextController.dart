@@ -24,9 +24,10 @@ class StatusTextController extends GetxController {
 
   void addNewStatus() {
     if (numberController.text.isNotEmpty) {
-      Status status =
-          Status(numberController.text.trim(), Timestamp.now(), "text", "");
+      Status status = Status(numberController.text.trim(), Timestamp.now(),
+          "text", "", List.empty());
       service.addNewStatus(status, id, name, image);
+      Get.back();
     }
   }
 }

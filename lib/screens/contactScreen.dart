@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/controllers/contactController.dart';
+import 'package:flutter_chat_app/controllers/chatController.dart';
 import 'package:flutter_chat_app/screens/messageScreen.dart';
 import 'package:flutter_chat_app/widgets/contactListView.dart';
 import 'package:flutter_chat_app/widgets/loadingLayout.dart';
 import 'package:get/get.dart';
 
-class ContactScreen extends GetView<ContactController> {
+class ContactScreen extends GetView<ChatController> {
   const ContactScreen({Key? key}) : super(key: key);
 
   @override

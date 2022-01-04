@@ -13,18 +13,16 @@ class ContactController extends GetxController {
   var isLoading = false.obs;
   var contacts = RxList<UserModel>();
   FirebaseService service = FirebaseService();
-  late String userNumber = "";
   String myNumber = FirebaseAuth.instance.currentUser!.phoneNumber!;
-  bool isNumber = false;
 
   @override
   void onInit() async {
     super.onInit();
     appPermission = AppPermissions();
-    SharedPreferences.getInstance().then((value) {
-      userNumber = value.getString("number")!;
-    });
-    userNumber = "";
+    // SharedPreferences.getInstance().then((value) {
+    //   userNumber = value.getString("number")!;
+    // });
+    // userNumber = "";
     await getMobileContacts();
   }
 
