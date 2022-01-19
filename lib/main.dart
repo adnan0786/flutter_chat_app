@@ -42,7 +42,6 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
-  ///forground work
   FirebaseMessaging.onMessage.listen((message) {
     NotificationModel notificationModel =
         NotificationModel.fromJson(message.data);
