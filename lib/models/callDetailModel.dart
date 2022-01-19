@@ -4,6 +4,7 @@ class CallDetailModel {
   String id, type, from, to;
   bool picked;
   Timestamp date;
+  String? image;
 
   CallDetailModel(
       this.id, this.type, this.from, this.to, this.picked, this.date);

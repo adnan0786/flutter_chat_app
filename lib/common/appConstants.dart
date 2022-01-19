@@ -12,5 +12,19 @@ class AppConstants {
       "AAAAL-xUY2c:APA91bHm_IIYq-l5vbIF6MuXiaamoSJJ-rELwezSA6IrwvQcyZjcn_YsJMQuxXNHylw3qEjaFrnzCjt-sLKXmw9WF41l8UDi5eTIdl0ASR_ntYw_II6ugMakpo9W4JkgjTuQaxYfgn1t";
 
   static String Token =
-      "00604520808688f42e88041802bc0cbbd42IADFMmhVpmHFFwvBTtiHJbkDoq7kAdUbn7u5pr/pIYre7wZa8+gAAAAAEABkg7/NGfJWYQEAAQAZ8lZh";
+      "00604520808688f42e88041802bc0cbbd42IAAimafs0I7FXGR6h8iQm/mhgi/zqdSIe+CD7zXSr3fhHQZa8+gAAAAAEADKVPAlK6LWYQEAAQApotZh";
+
+  static List languageList = [
+    "Arabic",
+    "English",
+    "Spanish",
+    "Urdu",
+  ];
+
+  static List languageCode = [
+    "ar_SA",
+    "en_US",
+    "es_US",
+    "ur_PK",
+  ];
 }

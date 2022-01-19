@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/statusController.dart';
+import 'package:flutter_chat_app/models/status.dart';
 import 'package:flutter_chat_app/utils/appUtils.dart';
 import 'package:get/get.dart';
 import 'package:story_view/utils.dart';
@@ -13,10 +14,15 @@ class StatusScreen extends GetView<StatusController> {
   @override
   Widget build(BuildContext context) {
     Get.put(StatusController());
-    controller.allStatus = Get.arguments[0];
+
+    controller.isStory.value = Get.arguments[0];
+    controller.allStatus.value = Get.arguments[1];
+    printInfo(info: "${controller.allStatus.length}");
     controller.arrangeStoryList();
-    controller.image = Get.arguments[1];
-    controller.name = Get.arguments[2];
+    controller.image = Get.arguments[2];
+    controller.name = Get.arguments[3];
+    controller.userId = Get.arguments[4];
+
     return Obx(() => controller.isStory.value
         ? storyView()
         : Scaffold(
@@ -24,7 +30,7 @@ class StatusScreen extends GetView<StatusController> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
-                "Status",
+                "Status".tr,
                 style: TextStyle(
                     color: Theme.of(context).textTheme.bodyText1?.color,
                     fontWeight: FontWeight.bold),
@@ -92,12 +98,26 @@ class StatusScreen extends GetView<StatusController> {
                                 SizedBox(
                                   width: 40,
                                 ),
-                                Text(
-                                  timeAgo(
-                                      controller.status[index].date.toDate()),
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      controller.status[index].members == null
+                                          ? "0 Views"
+                                          : "${controller.status[index].members!.length} Views",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      timeAgo(controller.status[index].date
+                                          .toDate()),
+                                      style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
                                 )
                               ],
                             ),
@@ -123,15 +143,36 @@ class StatusScreen extends GetView<StatusController> {
           child: StoryView(
             controller: controller.storyController,
             onStoryShow: (s) {
-              var index = controller.story.indexOf(s);
-              // controller.date.value = controller.status[index].date;
+              if (controller.myId != controller.userId) {
+                var index = controller.story.indexOf(s);
+                Status status = controller.status[index];
+                if (status.members != null) {
+                  if (!status.members!.contains(controller.myId)) {
+                    controller.seenStatus(status.id, status.members!);
+                  }
+                } else {
+                  controller.seenStatus(status.id, []);
+                }
+              }
+
+              if (controller.userId == controller.myId) {}
             },
             onComplete: () {
-              controller.isStory.value = false;
+              if (Get.arguments[0]) {
+                Get.back();
+              } else {
+                controller.isStory.value = false;
+              }
             },
             onVerticalSwipeComplete: (direction) {
               if (direction == Direction.down) {
-                controller.isStory.value = false;
+                if (Get.arguments[0]) {
+                  Get.back();
+                } else {
+                  controller.isStory.value = false;
+                }
+              } else if (direction == Direction.up) {
+
               }
             },
             storyItems: controller.story,
@@ -178,5 +219,11 @@ class StatusScreen extends GetView<StatusController> {
             ))
       ],
     );
+  }
+
+  void memberBottomSheet() {
+    Get.bottomSheet(Container(
+      padding: EdgeInsets.only(top: 10),
+    ));
   }
 }

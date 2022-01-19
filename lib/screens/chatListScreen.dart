@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/chatController.dart';
+import 'package:flutter_chat_app/models/status.dart';
 import 'package:flutter_chat_app/screens/messageScreen.dart';
 import 'package:flutter_chat_app/screens/statusScreen.dart';
 import 'package:flutter_chat_app/utils/cusotmSearchDelegate.dart';
@@ -31,11 +32,12 @@ class ChatListScreen extends GetView<ChatController> {
           ],
           backgroundColor: Theme.of(context).backgroundColor,
           title: Text(
-            "Messages",
+            "Messages".tr,
             style: TextStyle(
                 color: Theme.of(context).textTheme.bodyText1?.color,
                 fontWeight: FontWeight.bold),
           ),
+
         ),
         body: Obx(() {
           return controller.chats.length == 0
@@ -64,7 +66,7 @@ class ChatListScreen extends GetView<ChatController> {
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(shape: BoxShape.circle),
-                            child: controller.status.length < 0
+                            child: controller.status.isEmpty
                                 ? Stack(
                                     children: [
                                       Material(
@@ -116,69 +118,159 @@ class ChatListScreen extends GetView<ChatController> {
                                       )
                                     ],
                                   )
-                                : Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(40),
-                                      onTap: () {
-                                        Get.to(StatusScreen(), arguments: [
-                                          controller.status,
-                                          controller.user.photoURL,
-                                          controller.user.displayName,
-                                        ]);
-                                      },
-                                      child: StatusView(
-                                        radius: 30,
-                                        spacing: 15,
-                                        strokeWidth: 2,
-                                        indexOfSeenStatus: controller.status.length,
-                                        numberOfStatus:
-                                            controller.status.length,
-                                        padding: 3,
-                                        seenColor: Colors.grey,
-                                        unSeenColor: Colors.red,
-                                        centerImageUrl:
-                                            controller.status[0].type == "image"
-                                                ? controller.status[0].image
-                                                : controller.user.photoURL!,
+                                : Stack(
+                                    children: [
+                                      Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(40),
+                                          onTap: () {
+                                            Get.to(StatusScreen(), arguments: [
+                                              false,
+                                              controller.myStatus.value,
+                                              controller.user.photoURL,
+                                              controller.user.displayName,
+                                              controller.user.uid
+                                            ]);
+                                          },
+                                          child: Container(
+                                            width: 60,
+                                            height: 60,
+                                            child: StatusView(
+                                              radius: 30,
+                                              spacing: 15,
+                                              strokeWidth: 2,
+                                              indexOfSeenStatus:
+                                                  controller.status.length,
+                                              numberOfStatus:
+                                                  controller.status.length,
+                                              padding: 3,
+                                              seenColor: Colors.grey,
+                                              unSeenColor: Colors.red,
+                                              centerImageUrl: controller
+                                                          .status[0].type ==
+                                                      "image"
+                                                  ? controller.status[0].image
+                                                  : controller.user.photoURL!,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        right: 5,
+                                        bottom: 0,
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            onTap: () {
+                                              controller.showPicker(context);
+                                            },
+                                            child: Container(
+                                              width: 25,
+                                              height: 25,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                Icons.add_rounded,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: 10,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(right: 10),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: StatusView(
-                                        radius: 30,
-                                        spacing: 15,
-                                        strokeWidth: 2,
-                                        indexOfSeenStatus: 2,
-                                        numberOfStatus: 5,
-                                        padding: 1,
-                                        seenColor: Colors.grey,
-                                        unSeenColor: Colors.red,
-                                        centerImageUrl:
-                                            "https://picsum.photos/200/300",
-                                      ),
-                                    ),
+                          controller.allStories.length == 0
+                              ? Expanded(child: StatusLoadingView())
+                              : Expanded(
+                                  child: ListView.builder(
+                                    itemCount: controller.allStories.length,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return FutureBuilder<List<Status>>(
+                                          future: controller.getStories(
+                                              controller
+                                                  .allStories[index].userId),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 10),
+                                                child: Material(
+                                                  color: Colors.transparent,
+                                                  child: InkWell(
+                                                    onTap: () {},
+                                                    child: Material(
+                                                      color: Colors.transparent,
+                                                      child: InkWell(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(40),
+                                                        onTap: () {
+                                                          Get.to(StatusScreen(),
+                                                              arguments: [
+                                                                true,
+                                                                snapshot.data,
+                                                                controller
+                                                                    .allStories[
+                                                                        index]
+                                                                    .image,
+                                                                controller
+                                                                    .allStories[
+                                                                        index]
+                                                                    .name,
+                                                                controller
+                                                                    .allStories[
+                                                                        index]
+                                                                    .userId
+                                                              ]);
+                                                        },
+                                                        child: StatusView(
+                                                          radius: 30,
+                                                          spacing: 15,
+                                                          strokeWidth: 2,
+                                                          indexOfSeenStatus:
+                                                              snapshot.data!
+                                                                      .length -
+                                                                  1,
+                                                          numberOfStatus:
+                                                              snapshot
+                                                                  .data!.length,
+                                                          padding: 3,
+                                                          seenColor:
+                                                              Colors.grey,
+                                                          unSeenColor:
+                                                              Colors.red,
+                                                          centerImageUrl:
+                                                              controller
+                                                                  .allStories[
+                                                                      index]
+                                                                  .image,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return Text("waiting");
+                                            }
+                                          });
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                          )
+                                )
                         ],
                       ),
                     ),

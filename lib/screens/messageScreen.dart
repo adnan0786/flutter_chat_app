@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +23,6 @@ import 'package:flutter_chat_app/widgets/videoMessageView.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../appTheme.dart';
@@ -148,11 +145,11 @@ class MessageScreen extends GetView<MessageController> {
                   IconButton(
                     onPressed: () {
                       if (controller.chatId != null) {
-                        Get.to(VideoCallScreen(), arguments: [
-                          controller.chatId,
-                          controller.user.uId,
-                          "audio"
-                        ]);
+                        // Get.to(VideoCallScreen(), arguments: [
+                        //   controller.chatId,
+                        //   controller.user.uId,
+                        //   "audio"
+                        // ]);
                       }
                     },
                     icon: Icon(
@@ -254,13 +251,13 @@ class MessageScreen extends GetView<MessageController> {
                                                     .messages[index].star);
                                           }),
                                     FocusedMenuItem(
-                                        title: Text("Reply"),
+                                        title: Text("Reply".tr),
                                         trailingIcon: Icon(Icons.reply_rounded),
                                         onPressed: () {}),
                                     if (controller.messages[index].type ==
                                         "text")
                                       FocusedMenuItem(
-                                          title: Text("Copy"),
+                                          title: Text("Copy".tr),
                                           trailingIcon:
                                               Icon(Icons.copy_rounded),
                                           onPressed: () {
@@ -275,7 +272,7 @@ class MessageScreen extends GetView<MessageController> {
                                           }),
                                     FocusedMenuItem(
                                         title: Text(
-                                          "Delete",
+                                          "Delete".tr,
                                           style: TextStyle(
                                               color: Colors.redAccent),
                                         ),

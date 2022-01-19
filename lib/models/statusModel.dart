@@ -6,8 +6,7 @@ class StatusModel {
   Timestamp lastUpdate;
   List<Status>? stories;
 
-  StatusModel(
-      this.lastUpdate, this.userId, this.name, this.image);
+  StatusModel(this.lastUpdate, this.userId, this.name, this.image);
 
   factory StatusModel.fromJson(Map<String, dynamic> json) => StatusModel(
         json["lastUpdate"],

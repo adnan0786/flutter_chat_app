@@ -15,7 +15,7 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
         appBar: AppBar(
             backgroundColor: Theme.of(context).backgroundColor,
             iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-            title: Text("Send Location",
+            title: Text("Send Location".tr,
                 style: TextStyle(
                     color: Theme.of(context).textTheme.bodyText1?.color,
                     fontWeight: FontWeight.bold))),
@@ -98,14 +98,14 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("Normal"),
+                                            Text("Normal".tr),
                                             Icon(
                                               Icons.check_circle_rounded,
                                               color: Colors.green.shade700,
                                             )
                                           ],
                                         )
-                                      : Text("Normal"),
+                                      : Text("Normal".tr),
                                   value: MapType.normal,
                                 ),
                                 PopupMenuItem(
@@ -115,14 +115,14 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("Hybrid"),
+                                            Text("Hybrid".tr),
                                             Icon(
                                               Icons.check_circle_rounded,
                                               color: Colors.green.shade700,
                                             )
                                           ],
                                         )
-                                      : Text("Hybrid"),
+                                      : Text("Hybrid".tr),
                                   value: MapType.hybrid,
                                 ),
                                 PopupMenuItem(
@@ -132,14 +132,14 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("Satellite"),
+                                            Text("Satellite".tr),
                                             Icon(
                                               Icons.check_circle_rounded,
                                               color: Colors.green.shade700,
                                             )
                                           ],
                                         )
-                                      : Text("Satellite"),
+                                      : Text("Satellite".tr),
                                   value: MapType.satellite,
                                 ),
                                 PopupMenuItem(
@@ -149,14 +149,14 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("Terrain"),
+                                            Text("Terrain".tr),
                                             Icon(
                                               Icons.check_circle_rounded,
                                               color: Colors.green.shade700,
                                             )
                                           ],
                                         )
-                                      : Text("Terrain"),
+                                      : Text("Terrain".tr),
                                   value: MapType.terrain,
                                 )
                               ],
@@ -189,7 +189,7 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
                                 controller.getCurrentLocation();
                               },
                               child: Icon(
-                                Icons.ten_k,
+                                Icons.my_location_rounded,
                                 color: Colors.white,
                               ),
                             ),
@@ -273,7 +273,7 @@ class LocationPickerScreen extends GetView<LocationPickerController> {
                           },
                           child: Center(
                             child: Text(
-                              "Done",
+                              "Done".tr,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,

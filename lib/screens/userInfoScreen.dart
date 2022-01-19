@@ -215,7 +215,7 @@ class UserInfoScreen extends StatelessWidget {
                                 ),
                                 Expanded(
                                     child: Text(
-                                  "Media, Links & Docs",
+                                  "Media_Links_&_Docs".tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),
@@ -265,7 +265,7 @@ class UserInfoScreen extends StatelessWidget {
                                 ),
                                 Expanded(
                                     child: Text(
-                                  "Starred Messages",
+                                  "Starred_Messages".tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),

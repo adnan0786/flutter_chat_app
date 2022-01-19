@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/common/appConstants.dart';
 import 'package:flutter_chat_app/controllers/profileController.dart';
 import 'package:flutter_chat_app/screens/profileScreen.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,7 @@ class SettingScreen extends GetView<ProfileController> {
                           height: 6,
                         ),
                         Text(
-                          "View & edit profile",
+                          "View_&_edit_profile".tr,
                           style: TextStyle(
                               fontWeight: FontWeight.w400,
                               color: Theme.of(context).primaryColor,
@@ -81,16 +82,26 @@ class SettingScreen extends GetView<ProfileController> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ListTile(
-                tileColor: Theme.of(context).disabledColor.withOpacity(0.1),
-                leading: Icon(
-                  Icons.notifications_active,
-                  color: Theme.of(context).primaryColor,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: (){
+                    controller.languagePickerDialog();
+                  },
+                  child: ListTile(
+                    tileColor: Theme.of(context).disabledColor.withOpacity(0.1),
+                    leading: Icon(
+                      Icons.language_rounded,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    title: Text(
+                      "Language".tr,
+                    ),
+                    trailing: Text(AppConstants.languageList[AppConstants
+                        .languageCode
+                        .indexOf(controller.selectedLanguage.value)]),
+                  ),
                 ),
-                title: Text(
-                  "Notification",
-                ),
-                trailing: Switch.adaptive(value: false, onChanged: (val) {}),
               ),
             ),
             ListTile(
@@ -100,7 +111,7 @@ class SettingScreen extends GetView<ProfileController> {
                 color: Theme.of(context).primaryColor,
               ),
               title: Text(
-                "Help",
+                "Help".tr,
               ),
             ),
             Padding(
@@ -112,7 +123,7 @@ class SettingScreen extends GetView<ProfileController> {
                   color: Theme.of(context).primaryColor,
                 ),
                 title: Text(
-                  "About",
+                  "About".tr,
                 ),
               ),
             ),
@@ -123,7 +134,7 @@ class SettingScreen extends GetView<ProfileController> {
                 color: Theme.of(context).primaryColor,
               ),
               title: Text(
-                "Logout",
+                "Logout".tr,
               ),
             ),
           ],

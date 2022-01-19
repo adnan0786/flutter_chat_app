@@ -13,6 +13,7 @@ import 'package:flutter_chat_app/screens/dashboard.dart';
 import 'package:flutter_chat_app/screens/messageScreen.dart';
 import 'package:flutter_chat_app/screens/splashScreen.dart';
 import 'package:flutter_chat_app/services/callService.dart';
+import 'package:flutter_chat_app/utils/appLocalization.dart';
 import 'package:flutter_chat_app/utils/localNotificationUtils.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -90,6 +91,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Chat App',
       enableLog: true,
+      translations: AppLocalization(),
+      locale: Locale("en","US"),
       debugShowCheckedModeBanner: false,
       getPages: [
         GetPage(name: Routes.SPLASH_SCREEN, page: () => SplashScreen()),

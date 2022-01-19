@@ -70,7 +70,7 @@ class GetUserInfoScreen extends GetView<LoginController> {
                           ),
                           Expanded(
                               child: Text(
-                            "User Info",
+                            "User_Info".tr,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           )),
@@ -79,7 +79,7 @@ class GetUserInfoScreen extends GetView<LoginController> {
                             child: TextButton(
                                 onPressed: () {
                                   controller.skipInfo();
-                                }, child: Text("Skip")),
+                                }, child: Text("Skip".tr)),
                           )
                         ],
                       ),
@@ -244,7 +244,7 @@ class GetUserInfoScreen extends GetView<LoginController> {
                                     },
                                     child: Center(
                                       child: Text(
-                                        "Submit",
+                                        "Submit".tr,
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,

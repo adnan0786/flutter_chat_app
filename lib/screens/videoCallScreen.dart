@@ -29,7 +29,7 @@ class VideoCallScreen extends GetView<CallController> {
     return Obx(() {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Agora Video Call'),
+          title:  Text('Agora_Video_Call'.tr),
         ),
         body: Stack(
           children: [

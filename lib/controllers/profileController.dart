@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/common/appConstants.dart';
 import 'package:flutter_chat_app/common/appPermissions.dart';
 import 'package:flutter_chat_app/models/userModel.dart';
 import 'package:flutter_chat_app/network/firebaseService.dart';
@@ -18,6 +18,7 @@ class ProfileController extends GetxController {
   final appPermissions = AppPermissions();
   FirebaseService firebaseService = FirebaseService();
   final isLoading = RxBool(false);
+  RxString selectedLanguage = "en_US".obs;
   final userModel = UserModel(
           uId: "",
           name: "",
@@ -282,5 +283,42 @@ class ProfileController extends GetxController {
       printError(info: e.toString());
       showErrorSnackBar(Get.context!, e.toString(), "Status Error", true);
     });
+  }
+
+  void languagePickerDialog() {
+    Get.dialog(AlertDialog(
+        title: Text("Select language"),
+        content: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: AppConstants.languageList
+                  .map((e) => RadioListTile(
+                        title: Text(e.toString()),
+                        value: e.toString(),
+                        groupValue: selectedLanguage.value,
+                        selected: AppConstants.languageList[AppConstants
+                                .languageCode
+                                .indexOf(selectedLanguage.value)] ==
+                            e.toString(),
+                        onChanged: (value) {
+                          if (AppConstants.languageCode[
+                          AppConstants.languageList.indexOf(value)] != selectedLanguage.value) {
+                            selectedLanguage.value = AppConstants.languageCode[
+                                AppConstants.languageList.indexOf(value)];
+                            List<String> splitResult =
+                                selectedLanguage.value.split("_");
+                            printInfo(
+                                info: "${splitResult[0]}  ${splitResult[1]}");
+
+                            Get.back();
+                          }
+                        },
+                      ))
+                  .toList(),
+            ),
+          ),
+        )));
   }
 }

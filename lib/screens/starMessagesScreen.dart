@@ -20,7 +20,7 @@ class StarMessagesScreen extends GetView<StarredMessageController> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).backgroundColor,
             iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-            title: Text("Starred Messages",
+            title: Text("Starred_Messages".tr,
                 style: TextStyle(
                     color: Theme.of(context).textTheme.bodyText1?.color,
                     fontWeight: FontWeight.bold)),

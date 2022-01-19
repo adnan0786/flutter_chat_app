@@ -21,7 +21,7 @@ class ProfileScreen extends GetView<ProfileController> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
-                "Profile",
+                "Profile".tr,
                 style: TextStyle(
                     color: Theme.of(context).textTheme.bodyText1?.color,
                     fontWeight: FontWeight.bold),
@@ -60,7 +60,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   padding: const EdgeInsets.only(
                                       left: 16.0, bottom: 16, top: 16),
                                   child: Text(
-                                    "Username",
+                                    "Username".tr,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13,
@@ -123,7 +123,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   padding: const EdgeInsets.only(
                                       left: 16.0, bottom: 16, top: 16),
                                   child: Text(
-                                    "Status",
+                                    "Status".tr,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13,
@@ -183,7 +183,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   padding: const EdgeInsets.only(
                                       left: 16.0, bottom: 16, top: 16),
                                   child: Text(
-                                    "Number",
+                                    "Number".tr,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13,

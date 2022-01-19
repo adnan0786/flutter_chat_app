@@ -95,7 +95,7 @@ class IntroductionScreen extends StatelessWidget {
                     },
                     child: Center(
                       child: Text(
-                        "Register",
+                        "Register".tr,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,

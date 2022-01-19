@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/controllers/statusTextController.dart';
@@ -41,7 +40,7 @@ class StatusTextScreen extends GetView<StatusTextController> {
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(top: 5, bottom: 5),
                       border: InputBorder.none,
-                      hintText: "Type a status",
+                      hintText: "Type_a_status".tr,
                       hintStyle: TextStyle(
                           color: Colors.white70, fontWeight: FontWeight.w500)),
                 ),

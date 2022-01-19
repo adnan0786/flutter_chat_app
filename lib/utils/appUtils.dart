@@ -73,7 +73,7 @@ Future<File> cropImage(File imageFile) async {
         CropAspectRatioPreset.ratio16x9
       ],
       androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Cropper Image',
+          toolbarTitle: 'Cropper_Image'.tr,
           toolbarColor: Colors.deepOrange,
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.original,

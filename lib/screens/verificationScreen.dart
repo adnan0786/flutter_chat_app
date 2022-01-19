@@ -69,7 +69,7 @@ class VerificationScreen extends GetView<LoginController> {
                           ),
                           Expanded(
                               child: Text(
-                            "OTP Verification",
+                            "OTP_Verification".tr,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           )),
@@ -155,7 +155,7 @@ class VerificationScreen extends GetView<LoginController> {
                                     },
                                     child: Center(
                                       child: Text(
-                                        "Verify OTP",
+                                        "Verify_OTP".tr,
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,

@@ -28,7 +28,7 @@ class MediaMessagesScreen extends GetView<MediaController> {
                       color: Theme.of(context).textTheme.bodyText1?.color),
                   backgroundColor: Theme.of(context).backgroundColor,
                   title: Text(
-                    'Media',
+                    'Media'.tr,
                     style: TextStyle(
                         color: Theme.of(context).textTheme.bodyText1?.color,
                         fontWeight: FontWeight.bold),
@@ -43,10 +43,10 @@ class MediaMessagesScreen extends GetView<MediaController> {
                         borderRadius: BorderRadius.circular(25)),
                     unselectedLabelColor: Theme.of(context).disabledColor,
                     tabs: [
-                      Tab(child: Text('Photos')),
-                      Tab(child: Text('Videos')),
-                      Tab(child: Text('Audios')),
-                      Tab(child: Text('Files')),
+                      Tab(child: Text('Photos'.tr)),
+                      Tab(child: Text('Videos'.tr)),
+                      Tab(child: Text('Audios'.tr)),
+                      Tab(child: Text('Files'.tr)),
                     ],
                   ),
                 ),

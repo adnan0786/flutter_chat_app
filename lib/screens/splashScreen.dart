@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
               SlideTransition(
                 position: textAnimation,
                 child: Text(
-                  "Flutter Chat App",
+                  "Flutter_Chat_App".tr,
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
