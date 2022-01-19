@@ -5,7 +5,6 @@ import 'package:flutter_chat_app/models/status.dart';
 import 'package:flutter_chat_app/models/userModel.dart';
 import 'package:flutter_chat_app/network/firebaseService.dart';
 import 'package:get/get.dart';
-import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/story_view.dart';
 
 class StatusController extends GetxController {
@@ -19,6 +18,7 @@ class StatusController extends GetxController {
   Rx<Timestamp> date = Rx<Timestamp>(Timestamp.now());
   String myId = FirebaseAuth.instance.currentUser!.uid;
   FirebaseService service = FirebaseService();
+  DateTime currentDate = DateTime.now();
 
   List<UserModel> statusMembers = [];
 
@@ -42,7 +42,7 @@ class StatusController extends GetxController {
     });
   }
 
-  void seenStatus(String statusId, List<dynamic> members) {
+  void seenStatus(String statusId, List members) {
     members.add(myId);
     service.seenStatus(members, myId, statusId);
   }
@@ -55,5 +55,9 @@ class StatusController extends GetxController {
         statusMembers.add(member);
       });
     }
+  }
+
+  void deleteStatus(String id) {
+    service.deleteStatus(id, myId);
   }
 }

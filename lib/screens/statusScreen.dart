@@ -17,7 +17,6 @@ class StatusScreen extends GetView<StatusController> {
 
     controller.isStory.value = Get.arguments[0];
     controller.allStatus.value = Get.arguments[1];
-    printInfo(info: "${controller.allStatus.length}");
     controller.arrangeStoryList();
     controller.image = Get.arguments[2];
     controller.name = Get.arguments[3];
@@ -44,82 +43,106 @@ class StatusScreen extends GetView<StatusController> {
                   itemCount: controller.status.length,
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                        top: 3.0,
+                    return Dismissible(
+                      key: Key(
+                        index.toString(),
                       ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(10),
-                          onTap: () {
-                            controller.isStory.value = true;
-                          },
-                          child: Container(
-                            height: 70,
-                            padding: EdgeInsets.only(
-                                left: 30, right: 10, top: 5, bottom: 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                controller.status[index].type == "image"
-                                    ? Container(
-                                        height: 50,
-                                        width: 50,
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                            controller.status[index].image,
+                      onDismissed: (direction) {
+                        controller.deleteStatus(controller.status[index].id);
+                      },
+                      background: Container(
+                        color: Colors.red,
+                        padding: const EdgeInsets.only(right: 30),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: const [
+                            Icon(
+                              Icons.delete_rounded,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 3.0,
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () {
+                              controller.isStory.value = true;
+                            },
+                            child: Container(
+                              height: 70,
+                              padding: EdgeInsets.only(
+                                  left: 30, right: 10, top: 5, bottom: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  controller.status[index].type == "image"
+                                      ? Container(
+                                          height: 50,
+                                          width: 50,
+                                          child: CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                              controller.status[index].image,
+                                            ),
+                                            maxRadius: 20,
                                           ),
-                                          maxRadius: 20,
-                                        ),
-                                      )
-                                    : Container(
-                                        height: 50,
-                                        width: 50,
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 5),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.primaries[Random()
-                                                .nextInt(
-                                                    Colors.primaries.length)]),
-                                        child: Center(
-                                          child: Text(
-                                            controller.status[index].image,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              color: Colors.white,
+                                        )
+                                      : Container(
+                                          height: 50,
+                                          width: 50,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.primaries[Random()
+                                                  .nextInt(Colors
+                                                      .primaries.length)]),
+                                          child: Center(
+                                            child: Text(
+                                              controller.status[index].image,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
+                                  SizedBox(
+                                    width: 40,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        controller.status[index].members
+                                                    .length <
+                                                0
+                                            ? "0 Views"
+                                            : "${controller.status[index].members.length} Views",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                SizedBox(
-                                  width: 40,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      controller.status[index].members == null
-                                          ? "0 Views"
-                                          : "${controller.status[index].members!.length} Views",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    Text(
-                                      timeAgo(controller.status[index].date
-                                          .toDate()),
-                                      style: TextStyle(
-                                          color: Colors.grey.shade600,
-                                          fontWeight: FontWeight.w500),
-                                    )
-                                  ],
-                                )
-                              ],
+                                      Text(
+                                        timeAgo(controller.status[index].date
+                                            .toDate()),
+                                        style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontWeight: FontWeight.w500),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -146,9 +169,10 @@ class StatusScreen extends GetView<StatusController> {
               if (controller.myId != controller.userId) {
                 var index = controller.story.indexOf(s);
                 Status status = controller.status[index];
-                if (status.members != null) {
-                  if (!status.members!.contains(controller.myId)) {
-                    controller.seenStatus(status.id, status.members!);
+
+                if (status.members.length > 0) {
+                  if (!status.members.contains(controller.myId)) {
+                    controller.seenStatus(status.id, status.members);
                   }
                 } else {
                   controller.seenStatus(status.id, []);
@@ -171,9 +195,7 @@ class StatusScreen extends GetView<StatusController> {
                 } else {
                   controller.isStory.value = false;
                 }
-              } else if (direction == Direction.up) {
-
-              }
+              } else if (direction == Direction.up) {}
             },
             storyItems: controller.story,
           ),

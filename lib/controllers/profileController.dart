@@ -294,10 +294,12 @@ class ProfileController extends GetxController {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: AppConstants.languageList
-                  .map((e) => RadioListTile(
+                  .map((e) => RadioListTile<String>(
                         title: Text(e.toString()),
                         value: e.toString(),
-                        groupValue: selectedLanguage.value,
+                        groupValue: AppConstants.languageList[AppConstants
+                            .languageCode
+                            .indexOf(selectedLanguage.value)],
                         selected: AppConstants.languageList[AppConstants
                                 .languageCode
                                 .indexOf(selectedLanguage.value)] ==
@@ -309,8 +311,8 @@ class ProfileController extends GetxController {
                                 AppConstants.languageList.indexOf(value)];
                             List<String> splitResult =
                                 selectedLanguage.value.split("_");
-                            printInfo(
-                                info: "${splitResult[0]}  ${splitResult[1]}");
+                            Get.updateLocale(
+                                Locale(splitResult[0], splitResult[1]));
 
                             Get.back();
                           }

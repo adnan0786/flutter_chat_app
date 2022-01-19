@@ -237,7 +237,7 @@ class UserInfoScreen extends StatelessWidget {
                             Get.to(StarMessagesScreen(), arguments: [
                               Get.arguments[0],
                               userModel.name,
-                              userModel.image
+                              userModel.image,
                             ]);
                           },
                           child: Padding(

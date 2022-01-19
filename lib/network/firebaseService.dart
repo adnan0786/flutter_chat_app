@@ -669,15 +669,16 @@ class FirebaseService {
     return stories.docs.map((e) => Status.fromJson(e.data())).toList();
   }
 
-  void seenStatus(List<dynamic> members, String userId, String statusId) {
-    Map<String, dynamic> map = Map();
-    map["members"] = members;
+  void seenStatus(List members, String userId, String statusId) {
+    // Map<String, dynamic> map = Map();
+    // map["members"] = members;
+    printInfo(info: "${members.length}");
     FirebaseFirestore.instance
         .collection("status")
         .doc(userId)
         .collection("stories")
         .doc(statusId)
-        .set(map);
+        .update({'members': FieldValue.arrayUnion(members)});
   }
 
   Future<UserModel> getStatusMemberDetail(String userId) {
@@ -686,5 +687,14 @@ class FirebaseService {
         .doc(userId)
         .get()
         .then((value) => UserModel.fromJson(value.data()!));
+  }
+
+  deleteStatus(String statusId, String userId) {
+    FirebaseFirestore.instance
+        .collection("status")
+        .doc(userId)
+        .collection("stories")
+        .doc(statusId)
+        .delete();
   }
 }

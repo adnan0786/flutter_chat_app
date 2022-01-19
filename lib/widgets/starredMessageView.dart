@@ -4,11 +4,15 @@ import 'package:flutter_chat_app/utils/appUtils.dart';
 
 class StarredMessageView extends StatelessWidget {
   final MessageModel chatMessageModel;
-  final String myId;
+  final String myId, myImage, userImage;
 
-  const StarredMessageView(
-      {Key? key, required this.chatMessageModel, required this.myId})
-      : super(key: key);
+  const StarredMessageView({
+    Key? key,
+    required this.chatMessageModel,
+    required this.myId,
+    required this.myImage,
+    required this.userImage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +25,12 @@ class StarredMessageView extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(60.0)),
                 child: FadeInImage.assetNetwork(
-                    width: 45,
-                    height: 45,
-                    fit: BoxFit.cover,
-                    placeholder: "assets/images/default.png",
-                    image:
-                        "https://www.whatsappimages.in/wp-content/uploads/2021/01/Boys-Feeling-Very-Sad-Images-Pics-Downlaod.jpg"),
+                  width: 45,
+                  height: 45,
+                  fit: BoxFit.cover,
+                  placeholder: "assets/images/default.png",
+                  image: myId == chatMessageModel.sender ? myImage : userImage,
+                ),
               ),
               SizedBox(
                 width: 10,

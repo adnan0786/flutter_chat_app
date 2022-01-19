@@ -4,11 +4,15 @@ import 'package:flutter_chat_app/utils/appUtils.dart';
 
 class StarFileView extends StatelessWidget {
   final MessageModel chatMessageModel;
-  final String myId;
+  final String myId, myImage, userImage;
 
-  const StarFileView(
-      {Key? key, required this.chatMessageModel, required this.myId})
-      : super(key: key);
+  const StarFileView({
+    Key? key,
+    required this.chatMessageModel,
+    required this.myId,
+    required this.myImage,
+    required this.userImage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class StarFileView extends StatelessWidget {
                     fit: BoxFit.cover,
                     placeholder: "assets/images/default.png",
                     image:
-                        "https://www.whatsappimages.in/wp-content/uploads/2021/01/Boys-Feeling-Very-Sad-Images-Pics-Downlaod.jpg"),
+                    myId == chatMessageModel.sender ? myImage : userImage),
               ),
               SizedBox(
                 width: 10,

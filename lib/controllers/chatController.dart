@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/common/appPermissions.dart';
 import 'package:flutter_chat_app/models/chatModel.dart';
@@ -251,7 +250,6 @@ class ChatController extends GetxController {
     contacts.forEach((element) {
       for (var status in _userStatus) {
         if (status.userId.trim() == element.uId.trim()) {
-          printInfo(info: "${status.userId}");
           allStories.add(status);
         }
       }

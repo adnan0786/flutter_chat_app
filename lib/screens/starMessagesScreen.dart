@@ -33,15 +33,23 @@ class StarMessagesScreen extends GetView<StarredMessageController> {
                 return controller.messages[index].type == "text"
                     ? StarredMessageView(
                         chatMessageModel: controller.messages[index],
-                        myId: controller.myId)
+                        myId: controller.myId,
+                        userImage: controller.userImage!,
+                        myImage: controller.myImage,
+                      )
                     : controller.messages[index].type == "image"
                         ? StarImageView(
                             chatMessageModel: controller.messages[index],
                             myId: controller.myId,
+                            userImage: controller.userImage!,
+                            myImage: controller.myImage,
                           )
                         : StarFileView(
                             chatMessageModel: controller.messages[index],
-                            myId: controller.myId);
+                            myId: controller.myId,
+                            userImage: controller.userImage!,
+                            myImage: controller.myImage,
+                          );
               }),
         ));
   }
